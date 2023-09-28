@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ATMBussinesObjects;
 using Microsoft.Data.SqlClient;
-
 namespace ATMDataAccessLayer
 {
     public class ATM_DAL
@@ -19,7 +18,6 @@ namespace ATMDataAccessLayer
             SqlCommand cmd = new SqlCommand(query, connection);
             SqlDataReader dr = cmd.ExecuteReader();
             bool fc = false;
-            
             int PreviousBalance=0;
             if (dr.Read())
             {
@@ -27,12 +25,10 @@ namespace ATMDataAccessLayer
                 fc = true;
             }
             connection.Close();
-            //Variable for reciept decision
             bool reciept = false;
 
             if (fc == true )
             {
-                //Calculating Balance 
                 int UpdatedBalance = PreviousBalance-fcAmount;
                 connection.Open();
                 string updateQuery = $"Update Accounts set StartingBalance={UpdatedBalance} where Id={cBO.AccountNo}";
@@ -54,7 +50,6 @@ namespace ATMDataAccessLayer
                 }
                 connection.Close();
             }
-
             else
             {
                 Console.WriteLine("FAST CASH FAILED");
@@ -82,7 +77,6 @@ namespace ATMDataAccessLayer
             Console.WriteLine(cBO.AccountNo);
             Console.WriteLine("Reciptient id is");
             Console.WriteLine(recipientBO.AccountNo);
-
             string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ATM;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
@@ -103,7 +97,6 @@ namespace ATMDataAccessLayer
                 accConfirm = false;
             }
             connection.Close();
-
             bool senderSide=false;
             Console.WriteLine($"Are you sure you want to transfer {Amount} to {recipientBO.HolderName}?");
             Console.WriteLine("If Yes then Re-enter the Reciptient ID");
@@ -176,7 +169,6 @@ namespace ATMDataAccessLayer
             Console.WriteLine($"YOUR old balance was\t{cBO.Balance}");
             int newBalance = cBO.Balance + amount;
             cBO.Balance = newBalance;
-
             string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ATM;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
@@ -192,12 +184,10 @@ namespace ATMDataAccessLayer
                 if (wantRecipt=="Y"||wantRecipt=="y")
                 {
                     recipte = true;
-
                 }
                 else if (wantRecipt=="N"||wantRecipt=="n")
                 {
                     Console.WriteLine("Thank you for using our servise");
-
                 }
             }
             else
@@ -254,12 +244,10 @@ namespace ATMDataAccessLayer
             cmd.Parameters.Add(p1);
             cmd.Parameters.Add(p2);
             SqlDataReader dr = cmd.ExecuteReader();
-            
             if (dr.Read())
             {
                 cBO.AccountNo= System.Convert.ToInt32(dr.GetValue(0));
                 cBO.Balance= System.Convert.ToInt32(dr.GetValue(5));
-                //cID = System.Convert.ToInt32(dr.GetValue(0));
             }
             else
             {
@@ -480,7 +468,7 @@ namespace ATMDataAccessLayer
             {
                 query = $"Select * from Accounts where {searchWith}='{searchWithValue}'";
             }
-            else//This will search with account number or ablance
+            else//This will search with account number or balance
             {
                 query = $"Select * from Accounts where '{searchWith}'='{searchWithValue2}'";
 
